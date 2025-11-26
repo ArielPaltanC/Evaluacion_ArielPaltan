@@ -1,0 +1,11 @@
+{
+  "name": "anilloc",
+  "version": "1.0.0",
+  "main": "auditor.js",
+  "scripts": {
+    "start": "node auditor.js"
+  },
+  "dependencies": {
+    "ws": "^8.13.0"
+  }
+}

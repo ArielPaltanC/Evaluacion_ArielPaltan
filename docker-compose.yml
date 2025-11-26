@@ -1,0 +1,26 @@
+services:
+  nodoa:
+    build: ./nodoA
+    container_name: nodoa
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - nodob
+      - nodoc
+
+  nodob:
+    build: ./nodoB
+    container_name: nodob
+    restart: unless-stopped
+    depends_on:
+      - nodoc
+
+  nodoc:
+    build: ./nodoC
+    container_name: nodoc
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge

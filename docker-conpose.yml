@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./nodoA
+    container_name: anilloA
+    ports:
+      - "8080:80"
+    networks:
+      - anilloAB
+
+  frontend:
+    build: ./frontend
+    container_name: supermercado_frontend
+    ports:
+      - "8080:80"
+    networks:
+      - supermercado
+
+networks:
+  anilloAB:
+    driver: bridge

@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Topologia de Anillos</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 2rem auto; }
+    .product { padding: .5rem; border-bottom: 1px solid #eee; display:flex; justify-content:space-between; align-items:center }
+    button { padding: .4rem .8rem }
+    #history div { padding: 4px 0; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+
+  <h1>Nodo A</h1>
+  <div>
+    <label for="power">Valor inicial (power_level): </label>
+    <input id="power" type="number" value="50" />
+    <button id="startBtn">iniciar</button>
+  </div>
+  <div id="logs"></div>
+  <script>
+
+ 
+    const API_BASE = "http://localhost:8080";
+    const WS_URL = "ws://localhost:8080";
+    const ws = new WebSocket(WS_URL);
+
+    ws.addEventListener('message', ev => {
+      const msg = JSON.parse(ev.data);
+      addLog('Mensaje: ' + JSON.stringify(msg));
+      if (msg.type === 'ready') {
+          addLog('Nodo A listo.');
+      } else if (msg.type === 'final') {
+          addLog('CICLO COMPLETADO: ' + msg.power_level);
+      }
+    });
+
+    function addLog(txt) {
+      const logs = document.getElementById('logs');
+      const p = document.createElement('div');
+      p.textContent = txt;
+      logs.prepend(p);
+    }
+
+  document.getElementById('startBtn').addEventListener('click', async () => {
+    const value = Number(document.getElementById('power').value || 0);
+    if (isNaN(value)) { alert('Ingrese un número válido'); return; }
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ action: 'start', power_level: value }));
+      addLog('enivar: ' + value);
+    } else {
+      addLog('usando HTTP');
+      try {
+        const res = await fetch(`${API_BASE}/start`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ power_level: value }) });
+        const json = await res.json();
+        addLog('HTTP start response: ' + JSON.stringify(json));
+      } catch (err) {
+        addLog('HTTP error: ' + err.message);
+      }
+    }
+  });
+
+  </script>
+</body>
+</html>

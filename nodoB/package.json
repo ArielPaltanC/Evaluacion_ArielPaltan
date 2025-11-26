@@ -1,0 +1,11 @@
+{
+  "name": "anillob",
+  "version": "1.0.0",
+  "main": "transformer.js",
+  "scripts": {
+    "start": "node transformer.js"
+  },
+  "dependencies": {
+    "ws": "^8.13.0"
+  }
+}
